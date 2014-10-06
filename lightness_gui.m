@@ -175,21 +175,26 @@ function ok_button2_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.Status, 'String', 'Loading HDR Image');
+disp('Loading HDR image')
 filename = getappdata(0, 'filename');
 hdrim = hdrread(filename);
 low_lightness = getappdata(0, 'min_lightness');
 high_lightness = getappdata(0, 'max_lightness');
 set(handles.Status, 'String', 'Tonemapping...');
+disp('Tonemapping')
 im1 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', .5);
 im2 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1);
 im3 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1.5);
 im4 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2);
 im5 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2.5);
 set(handles.Status, 'String', 'storing tonemapped images...');
+disp('storing tonemapped images')
 setappdata(0, 'tonemap1', im1);
 setappdata(0, 'tonemap2', im2);
 setappdata(0, 'tonemap3', im3);
 setappdata(0, 'tonemap4', im4);
 setappdata(0, 'tonemap5', im5);
 set(handles.Status, 'String', 'launching selection interface');
+disp('launching selection interface')
+close;
 image_gui;
