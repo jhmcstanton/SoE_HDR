@@ -22,7 +22,7 @@ function varargout = image_gui(varargin)
 
 % Edit the above text to modify the response to help image_gui
 
-% Last Modified by GUIDE v2.5 06-Oct-2014 12:23:53
+% Last Modified by GUIDE v2.5 06-Oct-2014 12:51:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;

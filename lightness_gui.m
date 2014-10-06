@@ -22,7 +22,7 @@ function varargout = lightness_gui(varargin)
 
 % Edit the above text to modify the response to help lightness_gui
 
-% Last Modified by GUIDE v2.5 05-Oct-2014 16:05:25
+% Last Modified by GUIDE v2.5 06-Oct-2014 12:52:21
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -174,21 +174,22 @@ function ok_button2_Callback(hObject, eventdata, handles)
 % hObject    handle to ok_button2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+set(handles.Status, 'String', 'Loading HDR Image');
 filename = getappdata(0, 'filename');
 hdrim = hdrread(filename);
 low_lightness = getappdata(0, 'min_lightness');
 high_lightness = getappdata(0, 'max_lightness');
-disp('tonemapping...')
+set(handles.Status, 'String', 'Tonemapping...');
 im1 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', .5);
 im2 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1);
 im3 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1.5);
 im4 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2);
 im5 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2.5);
-disp('storing tonemapped images...')
+set(handles.Status, 'String', 'storing tonemapped images...');
 setappdata(0, 'tonemap1', im1);
 setappdata(0, 'tonemap2', im2);
 setappdata(0, 'tonemap3', im3);
 setappdata(0, 'tonemap4', im4);
 setappdata(0, 'tonemap5', im5);
-disp('launching selection interface')
+set(handles.Status, 'String', 'launching selection interface');
 image_gui;
