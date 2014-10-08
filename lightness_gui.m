@@ -22,7 +22,7 @@ function varargout = lightness_gui(varargin)
 
 % Edit the above text to modify the response to help lightness_gui
 
-% Last Modified by GUIDE v2.5 06-Oct-2014 12:52:21
+% Last Modified by GUIDE v2.5 08-Oct-2014 11:28:39
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -63,6 +63,15 @@ guidata(hObject, handles);
 % UIWAIT makes lightness_gui wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
+filename = getappdata(0, 'filename');
+hdrim = hdrread(filename);
+imV = hdrim(:);
+max_im = max(imV);
+min_im = min(imV);
+
+set(handles.min_pixel_field, 'string', num2str(min_im));
+set(handles.max_pixel_field, 'string', num2str(max_im));
+
 
 % --- Outputs from this function are returned to the command line.
 function varargout = lightness_gui_OutputFcn(hObject, eventdata, handles) 
@@ -85,7 +94,7 @@ function min_slider_Callback(hObject, eventdata, handles)
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 slider_value = get(hObject,'Value');
 setappdata(0, 'min_lightness', slider_value);
-set(handles.min_lightness_field, 'String', num2str(slider_value));
+set(handles.min_lightness_field, 'string', num2str(slider_value));
 
 % --- Executes during object creation, after setting all properties.
 function min_slider_CreateFcn(hObject, eventdata, handles)
@@ -100,18 +109,18 @@ end
 
 
 
-function edit2_Callback(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
+function min_pixel_field_Callback(hObject, eventdata, handles)
+% hObject    handle to min_pixel_field (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit2 as text
-%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+% Hints: get(hObject,'String') returns contents of min_pixel_field as text
+%        str2double(get(hObject,'String')) returns contents of min_pixel_field as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
+function min_pixel_field_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to min_pixel_field (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -123,18 +132,18 @@ end
 
 
 
-function edit3_Callback(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
+function max_pixel_field_Callback(hObject, eventdata, handles)
+% hObject    handle to max_pixel_field (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit3 as text
-%        str2double(get(hObject,'String')) returns contents of edit3 as a double
+% Hints: get(hObject,'String') returns contents of max_pixel_field as text
+%        str2double(get(hObject,'String')) returns contents of max_pixel_field as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit3_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
+function max_pixel_field_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to max_pixel_field (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -155,7 +164,7 @@ function max_slider_Callback(hObject, eventdata, handles)
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 slider_value = get(hObject,'Value');
 setappdata(0, 'max_lightness', slider_value);
-set(handles.max_lightness_field, 'String', num2str(slider_value));
+set(handles.max_lightness_field, 'string', num2str(slider_value));
 
 % --- Executes during object creation, after setting all properties.
 function max_slider_CreateFcn(hObject, eventdata, handles)
@@ -174,30 +183,12 @@ function ok_button2_Callback(hObject, eventdata, handles)
 % hObject    handle to ok_button2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 filename = getappdata(0, 'filename');
 hdrim = hdrread(filename);
 low_lightness = getappdata(0, 'min_lightness');
 high_lightness = getappdata(0, 'max_lightness');
-wait_handle = waitbar(0, 'Tonemapping...');
-disp('Tonemapping')
 im1 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', .5);
-waitbar(.2)
 im2 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1);
-waitbar(.4)
 im3 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1.5);
-waitbar(.6)
 im4 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2);
-waitbar(.8)
 im5 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2.5);
-waitbar(1)
-disp('storing tonemapped images')
-setappdata(0, 'tonemap1', im1);
-setappdata(0, 'tonemap2', im2);
-setappdata(0, 'tonemap3', im3);
-setappdata(0, 'tonemap4', im4);
-setappdata(0, 'tonemap5', im5);
-close(wait_handle);
-disp('launching selection interface')
-close;
-image_gui;
