@@ -63,11 +63,21 @@ guidata(hObject, handles);
 % UIWAIT makes lightness_gui wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
+h = waitbar(0,'Loading HDR image. This process takes a few moments');
 filename = getappdata(0, 'filename');
 hdrim = hdrread(filename);
+close(h);
+setappdata(0,'hdrim', hdrim);
 imV = hdrim(:);
 max_im = max(imV);
 min_im = min(imV);
+if max_im > 255
+    max_im = 255;
+end
+
+if min_im < 0
+    min_im = 0;
+end
 
 set(handles.min_pixel_field, 'string', num2str(min_im));
 set(handles.max_pixel_field, 'string', num2str(max_im));
@@ -183,12 +193,24 @@ function ok_button2_Callback(hObject, eventdata, handles)
 % hObject    handle to ok_button2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-filename = getappdata(0, 'filename');
-hdrim = hdrread(filename);
+hdrim = getappdata(0, 'hdrim');
 low_lightness = getappdata(0, 'min_lightness');
 high_lightness = getappdata(0, 'max_lightness');
+h = waitbar(0,'Tonemapping');
 im1 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', .5);
+h = waitbar(.2,h,'Tonemapping');
 im2 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1);
+h = waitbar(.4,h,'Tonemapping');
 im3 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1.5);
+h = waitbar(.6,h,'Tonemapping');
 im4 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2);
+h = waitbar(.8,h,'Tonemapping');
 im5 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2.5);
+close(h);
+setappdata(0, 'tonemap1', im1);
+setappdata(0, 'tonemap2', im2);
+setappdata(0, 'tonemap3', im3);
+setappdata(0, 'tonemap4', im4);
+setappdata(0, 'tonemap5', im5);
+close;
+image_gui;

@@ -1,3 +1,3 @@
-guide;
+% guide;
 initial_gui;
-lightness_gui;
+% lightness_gui;
