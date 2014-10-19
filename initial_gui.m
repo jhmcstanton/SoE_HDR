@@ -22,7 +22,7 @@ function varargout = initial_gui(varargin)
 
 % Edit the above text to modify the response to help initial_gui
 
-% Last Modified by GUIDE v2.5 05-Oct-2014 15:31:45
+% Last Modified by GUIDE v2.5 19-Oct-2014 14:30:45
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -72,22 +72,22 @@ function varargout = initial_gui_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-% --- Executes on button press in radiobutton1.
-function radiobutton1_Callback(hObject, eventdata, handles)
-% hObject    handle to radiobutton1 (see GCBO)
+% --- Executes on button press in natural_scenes.
+function natural_scenes_Callback(hObject, eventdata, handles)
+% hObject    handle to natural_scenes (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of radiobutton1
+% Hint: get(hObject,'Value') returns toggle state of natural_scenes
 
 
-% --- Executes on button press in radiobutton2.
-function radiobutton2_Callback(hObject, eventdata, handles)
-% hObject    handle to radiobutton2 (see GCBO)
+% --- Executes on button press in medical_image.
+function medical_image_Callback(hObject, eventdata, handles)
+% hObject    handle to medical_image (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of radiobutton2
+% Hint: get(hObject,'Value') returns toggle state of medical_image
 
 
 % --- Executes on button press in radar_backscatter.
@@ -114,7 +114,19 @@ function ok_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 filename = get(handles.filename_field, 'string');
-display(filename);
+isNatural = get(handles.natural_scenes, 'Value');
+isMedical = get(handles.medical_image, 'Value');
+isRadar = get(handles.radar_backscatter, 'Value');
+isTelescope = get(handles.telescope_image, 'Value');
+if isNatural == 1
+    setappdata(0,'filetype','Natural');
+elseif isMedical == 1
+    setappdata(0,'filetype','Medical');
+elseif isRadar == 1
+    setappdata(0,'filetype','Radar');
+elseif isTelescope == 1
+    setappdata(0,'filetype','Telescope');
+end
 close;
 setappdata(0, 'filename', filename);
 lightness_gui;

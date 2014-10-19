@@ -61,12 +61,39 @@ guidata(hObject, handles);
 % UIWAIT makes lightness_gui wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
-h = waitbar(0,'Reading HDR image. This process takes a few moments');
-filename = getappdata(0, 'filename');
-hdrim = hdrread(filename);
-close(h);
-setappdata(0,'hdrim', hdrim);
-imV = hdrim(:);
+filetype = getappdata(0,'filetype');
+filename = getappdata(0,'filename');
+display(filetype);
+if strcmp(filetype, 'Natural')
+    %.hdr
+    h = waitbar(0,'Reading HDR image. This process takes a few moments');
+    hdrim = hdrread(filename);
+    close(h);
+    setappdata(0,'im', hdrim);
+    imV = hdrim(:);
+elseif strcmp(filetype, 'Medical')
+    %.dcm
+    h = waitbar(0,'Reading Medical image. This process takes a few moments');
+    im = dicomread(filename);
+    close(h);
+    setappdata(0,'im', im);
+    imV = im(:);
+elseif strcmp(filetype, 'Radar')
+    %.mat
+    h = waitbar(0,'Reading Radar image. This process takes a few moments');
+    im = load(filename);
+    close(h);
+    setappdata(0,'im', im);
+    imV = im(:);
+elseif strcmp(filetype, 'Telescope')
+    %.fits
+    h = waitbar(0,'Reading Telescope image. This process takes a few moments');
+    im = fitsread(filename);
+    close(h);
+    setappdata(0,'im', im);
+    imV = im(:);
+end
+
 max_im = max(imV);
 min_im = min(imV);
 if max_im > 255
@@ -191,24 +218,30 @@ function ok_button2_Callback(hObject, eventdata, handles)
 % hObject    handle to ok_button2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-hdrim = getappdata(0, 'hdrim');
+filetype = getappdata(0, 'filetype');
+im = getappdata(0, 'im');
 low_lightness = getappdata(0, 'min_lightness');
 if low_lightness == 0
     low_lightness = 0.0001;
 end
 high_lightness = getappdata(0, 'max_lightness');
-display(low_lightness);
-display(high_lightness);
+
+if filetype == 'Natural'
+elseif filetype == 'Medical'
+elseif filetype == 'Radar'
+elseif filetype == 'Telescpe'
+end;
+
 h = waitbar(0,'Tonemapping');
-im1 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', .5);
+im1 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', .5);
 h = waitbar(.2,h,'Tonemapping');
-im2 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1);
+im2 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1);
 h = waitbar(.4,h,'Tonemapping');
-im3 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1.5);
+im3 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1.5);
 h = waitbar(.6,h,'Tonemapping');
-im4 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2);
+im4 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2);
 h = waitbar(.8,h,'Tonemapping');
-im5 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2.5);
+im5 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2.5);
 close(h);
 setappdata(0, 'tonemap1', im1);
 setappdata(0, 'tonemap2', im2);

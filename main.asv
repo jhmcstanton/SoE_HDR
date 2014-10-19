@@ -1,0 +1,5 @@
+%initial_gui;
+%guide;
+
+im = fitsread('fits_1.fits');
+im_toned = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', .5);
