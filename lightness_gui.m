@@ -43,7 +43,7 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-
+import matlab.io.*
 % --- Executes just before lightness_gui is made visible.
 function lightness_gui_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
@@ -84,9 +84,15 @@ elseif strcmp(filetype, 'Radar')
     im = load(filename);
     close(h);
     setappdata(0,'im', im);
+    if isfield(im, 'Data')
+        im = im.Data;
+    else
+        im = im.A;
+    end;
     imV = im(:);
 elseif strcmp(filetype, 'Telescope')
     %.fits
+    imports;
     h = waitbar(0,'Reading Telescope image. This process takes a few moments');
     im = fitsread(filename);
     close(h);
@@ -225,24 +231,78 @@ if low_lightness == 0
     low_lightness = 0.0001;
 end
 high_lightness = getappdata(0, 'max_lightness');
+import matlab.io.*
 
-if filetype == 'Natural'
-elseif filetype == 'Medical'
-elseif filetype == 'Radar'
-elseif filetype == 'Telescpe'
-end;
+if strcmp(filetype, 'Natural')
+    %.hdr
+    h = waitbar(0,'Tonemapping');
+    im1 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', .5);
+    h = waitbar(.2,h,'Tonemapping');
+    im2 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1);
+    h = waitbar(.4,h,'Tonemapping');
+    im3 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1.5);
+    h = waitbar(.6,h,'Tonemapping');
+    im4 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2);
+    h = waitbar(.8,h,'Tonemapping');
+    im5 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2.5);
+    close(h);
+elseif strcmp(filetype, 'Medical')
+    %.dcm
+    % Suggested .15-1
+    im = dicomread('dcm_1.dcm');
+    im = cat(3,double(im),double(im),double(im));
+    h = waitbar(0,'Tonemapping');
+    im1 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 10);
+    h = waitbar(.2,h,'Tonemapping');
+    im2 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 100);
+    h = waitbar(.4,h,'Tonemapping');
+    im3 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 200);
+    h = waitbar(.6,h,'Tonemapping');
+    im4 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 300);
+    h = waitbar(.8,h,'Tonemapping');
+    im5 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 400);
+    close(h);
+elseif strcmp(filetype, 'Radar')
+    %.mat
+    %suggested .2-1
+    if isfield(im, 'Data')
+        im = im.Data;
+    else
+        im = im.A;
+    end;
+    im = cat(3,im,im,im);
+    h = waitbar(0,'Tonemapping');
+    im1 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', .5);
+    h = waitbar(.2,h,'Tonemapping');
+    im2 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1);
+    h = waitbar(.4,h,'Tonemapping');
+    im3 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1.5);
+    h = waitbar(.6,h,'Tonemapping');
+    im4 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2);
+    h = waitbar(.8,h,'Tonemapping');
+    im5 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2.5);
+    close(h);
+elseif strcmp(filetype, 'Telescope')
+    %.fits
+    % suggested .2-.9
+    image = fits.openFile('fits_1.fits');
+    im = fits.readImg(image);
+    fits.closeFile(image);
+    im = cat(3,im,im,im);
+    im = abs(im);
+    h = waitbar(0,'Tonemapping');
+    im1 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', .5);
+    h = waitbar(.2,h,'Tonemapping');
+    im2 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1);
+    h = waitbar(.4,h,'Tonemapping');
+    im3 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1.5);
+    h = waitbar(.6,h,'Tonemapping');
+    im4 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2);
+    h = waitbar(.8,h,'Tonemapping');
+    im5 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2.5);
+    close(h);
+end
 
-h = waitbar(0,'Tonemapping');
-im1 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', .5);
-h = waitbar(.2,h,'Tonemapping');
-im2 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1);
-h = waitbar(.4,h,'Tonemapping');
-im3 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1.5);
-h = waitbar(.6,h,'Tonemapping');
-im4 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2);
-h = waitbar(.8,h,'Tonemapping');
-im5 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2.5);
-close(h);
 setappdata(0, 'tonemap1', im1);
 setappdata(0, 'tonemap2', im2);
 setappdata(0, 'tonemap3', im3);

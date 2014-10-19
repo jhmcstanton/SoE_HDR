@@ -1,7 +1,44 @@
-%initial_gui;
+import matlab.io.*
+
+initial_gui;
 %guide;
 
-im = dicomread('dcm_1.dcm');
-imagesc(im);
-display(size(im));
-im_toned = tonemap(im, 'AdjustLightness', [0, 1], 'AdjustSaturation', .5);
+%{
+    im = load('mat_img.mat');
+    figure;
+    imagesc(im.A);
+    if isfield(im, 'Data')
+        im = im.Data;
+    else
+        im = im.A;
+    end;
+    im = cat(3,im,im,im);
+    im_toned = tonemap(im, 'AdjustLightness', [.2, 1], 'AdjustSaturation', 1);
+    figure;
+    imshow(im_toned);
+%}
+
+%{
+    image = fits.openFile('fits_1.fits');
+    im_1 = fits.readImg(image);
+    im = fitsread('fits_1.fits');
+    im_2 = cat(3,double(im),double(im),double(im));
+    im_2 = cat(3,im_1,im_1,im_1);
+    im_2 = abs(im_2);
+    display(min(imV));
+    figure;
+    im_toned = tonemap(im_2, 'AdjustLightness', [.2, .9], 'AdjustSaturation', 1);
+    figure;
+    imshow(im_toned);
+%}
+
+%{
+    im = dicomread('dcm_1.dcm');
+    im_2 = cat(3,double(im),double(im),double(im));
+    figure;
+    imagesc(im);
+    display(size(im_2));
+    im_toned = tonemap(im_2, 'AdjustLightness', [.15, 1], 'AdjustSaturation', 1);
+    figure;
+    imshow(im_toned);
+%}
