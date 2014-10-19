@@ -41,8 +41,6 @@ if nargout
 else
     gui_mainfcn(gui_State, varargin{:});
 end
-
-display(getappdata(0, 'filename'));
 % End initialization code - DO NOT EDIT
 
 
@@ -63,7 +61,7 @@ guidata(hObject, handles);
 % UIWAIT makes lightness_gui wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
-h = waitbar(0,'Loading HDR image. This process takes a few moments');
+h = waitbar(0,'Reading HDR image. This process takes a few moments');
 filename = getappdata(0, 'filename');
 hdrim = hdrread(filename);
 close(h);
@@ -195,7 +193,12 @@ function ok_button2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 hdrim = getappdata(0, 'hdrim');
 low_lightness = getappdata(0, 'min_lightness');
+if low_lightness == 0
+    low_lightness = 0.0001;
+end
 high_lightness = getappdata(0, 'max_lightness');
+display(low_lightness);
+display(high_lightness);
 h = waitbar(0,'Tonemapping');
 im1 = tonemap(hdrim, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', .5);
 h = waitbar(.2,h,'Tonemapping');

@@ -85,6 +85,8 @@ if pathname == 0 %check if user canceled the dialog box
 else
     name = fullfile(pathname, filename);
     imwrite(img , name, 'png');
+    figure;
+    imshow(img);
 end
 
 

@@ -72,7 +72,6 @@ function varargout = initial_gui_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-
 % --- Executes on button press in radiobutton1.
 function radiobutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to radiobutton1 (see GCBO)
