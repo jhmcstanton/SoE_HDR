@@ -71,6 +71,7 @@ if strcmp(filetype, 'Natural')
     close(h);
     setappdata(0,'im', hdrim);
     imV = hdrim(:);
+    set(handles.recommend_field, 'string', 'Recommended .1 - 1');
 elseif strcmp(filetype, 'Medical')
     %.dcm
     h = waitbar(0,'Reading Medical image. This process takes a few moments');
@@ -78,6 +79,7 @@ elseif strcmp(filetype, 'Medical')
     close(h);
     setappdata(0,'im', im);
     imV = im(:);
+    set(handles.recommend_field, 'string', 'Recommended .15 - 1');
 elseif strcmp(filetype, 'Radar')
     %.mat
     h = waitbar(0,'Reading Radar image. This process takes a few moments');
@@ -90,6 +92,7 @@ elseif strcmp(filetype, 'Radar')
         im = im.A;
     end;
     imV = im(:);
+    set(handles.recommend_field, 'string', 'Recommended .2 - 1');
 elseif strcmp(filetype, 'Telescope')
     %.fits
     imports;
@@ -98,6 +101,7 @@ elseif strcmp(filetype, 'Telescope')
     close(h);
     setappdata(0,'im', im);
     imV = im(:);
+    set(handles.recommend_field, 'string', 'Recommended .2 - .9');
 end
 
 max_im = max(imV);
