@@ -66,8 +66,23 @@ filename = getappdata(0,'filename');
 display(filetype);
 if strcmp(filetype, 'Natural')
     %.hdr
-    h = waitbar(0,'Reading HDR image. This process takes a few moments');
-    hdrim = hdrread(filename);
+    h = waitbar(0,'Creating HDR image. This process takes a few moments');
+    im = imread(filename);
+    h = waitbar(1/8,h,'Creating HDR image. This process takes a few moments');
+    im_high = im * 1.25;
+    h = waitbar(2/8,h,'Creating HDR image. This process takes a few moments');
+    im_low = im * .75;
+    h = waitbar(3/8,h,'Creating HDR image. This process takes a few moments');
+    imwrite(im, 'creating_hdr_mid_img.png');
+    h = waitbar(4/8,h,'Creating HDR image. This process takes a few moments');
+    imwrite(im_low, 'creating_hdr_low_img.png');
+    h = waitbar(5/8,h,'Creating HDR image. This process takes a few moments');
+    imwrite(im_high, 'creating_hdr_high_img.png');
+    h = waitbar(6/8,h,'Creating HDR image. This process takes a few moments');
+    images = {'creating_hdr_low_img.png', 'creating_hdr_mid_img.png', 'creating_hdr_high_img.png'};
+    h = waitbar(7/8,h,'Creating HDR image. This process takes a few moments');
+    hdrim = makehdr(images, 'ExposureValues', [-1 0 1]);
+    %hdrim = hdrread(filename);
     close(h);
     setappdata(0,'im', hdrim);
     imV = hdrim(:);
@@ -106,13 +121,6 @@ end
 
 max_im = max(imV);
 min_im = min(imV);
-if max_im > 255
-    max_im = 255;
-end
-
-if min_im < 0
-    min_im = 0;
-end
 
 set(handles.min_pixel_field, 'string', num2str(min_im));
 set(handles.max_pixel_field, 'string', num2str(max_im));
@@ -230,13 +238,16 @@ function ok_button2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 filetype = getappdata(0, 'filetype');
 im = getappdata(0, 'im');
-low_lightness = getappdata(0, 'min_lightness');
+% low_lightness = getappdata(0, 'min_lightness');
+low_lightness = get(handles.min_slider, 'Value');
 if low_lightness == 0
     low_lightness = 0.0001;
 end
-high_lightness = getappdata(0, 'max_lightness');
+% high_lightness = getappdata(0, 'max_lightness');
+high_lightness = get(handles.max_slider, 'Value');
 import matlab.io.*
-
+display(low_lightness);
+display(high_lightness);
 if strcmp(filetype, 'Natural')
     %.hdr
     h = waitbar(0,'Tonemapping');
