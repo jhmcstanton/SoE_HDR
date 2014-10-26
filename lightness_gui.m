@@ -63,7 +63,6 @@ guidata(hObject, handles);
 
 filetype = getappdata(0,'filetype');
 filename = getappdata(0,'filename');
-display(filetype);
 if strcmp(filetype, 'Natural')
     %.hdr
     h = waitbar(0,'Creating HDR image. This process takes a few moments');
@@ -121,6 +120,9 @@ end
 
 max_im = max(imV);
 min_im = min(imV);
+if min_im < 0
+    min_im = 0;
+end
 
 set(handles.min_pixel_field, 'string', num2str(min_im));
 set(handles.max_pixel_field, 'string', num2str(max_im));
@@ -246,20 +248,18 @@ end
 % high_lightness = getappdata(0, 'max_lightness');
 high_lightness = get(handles.max_slider, 'Value');
 import matlab.io.*
-display(low_lightness);
-display(high_lightness);
 if strcmp(filetype, 'Natural')
     %.hdr
     h = waitbar(0,'Tonemapping');
-    im1 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', .5);
+    im1 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2);
     h = waitbar(.2,h,'Tonemapping');
-    im2 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1);
+    im2 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 3);
     h = waitbar(.4,h,'Tonemapping');
-    im3 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1.5);
+    im3 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 4);
     h = waitbar(.6,h,'Tonemapping');
-    im4 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2);
+    im4 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 5);
     h = waitbar(.8,h,'Tonemapping');
-    im5 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2.5);
+    im5 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 6);
     close(h);
 elseif strcmp(filetype, 'Medical')
     %.dcm
@@ -287,21 +287,22 @@ elseif strcmp(filetype, 'Radar')
     end;
     im = cat(3,im,im,im);
     h = waitbar(0,'Tonemapping');
-    im1 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', .5);
+    im1 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1);
     h = waitbar(.2,h,'Tonemapping');
-    im2 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1);
+    im2 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 3);
     h = waitbar(.4,h,'Tonemapping');
-    im3 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 1.5);
+    im3 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 5);
     h = waitbar(.6,h,'Tonemapping');
-    im4 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2);
+    im4 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 7);
     h = waitbar(.8,h,'Tonemapping');
-    im5 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 2.5);
+    im5 = tonemap(im, 'AdjustLightness', [low_lightness, high_lightness], 'AdjustSaturation', 9);
     close(h);
 elseif strcmp(filetype, 'Telescope')
     %.fits
     % suggested .2-.9
     image = fits.openFile('fits_1.fits');
     im = fits.readImg(image);
+    im = transpose(im);
     fits.closeFile(image);
     im = cat(3,im,im,im);
     im = abs(im);
